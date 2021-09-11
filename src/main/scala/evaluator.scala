@@ -13,7 +13,8 @@ case class DerivativeEvaluator(functor: UnivariateFunctor)
     functor(Jet(x, 0)).infinitesimal(0)
 }
 
-case class GradientEvaluator(functor: ScalarFunctor) extends AutoDiffEvaluator {
+case class GradientEvaluator(functor: MultivariateFunctor)
+    extends AutoDiffEvaluator {
 
   private val jetStorage = DenseVector.zeros[Jet[Double]](functor.inputSize)
   private val gradientStorage = DenseVector.zeros[Double](functor.inputSize)

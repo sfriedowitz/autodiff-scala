@@ -26,7 +26,7 @@ abstract class UnivariateFunctor extends AutoDiffFunctor(1, 1) {
 
 }
 
-abstract class ScalarFunctor(inputSize: Int)
+abstract class MultivariateFunctor(inputSize: Int)
     extends AutoDiffFunctor(inputSize, 1) {
 
   private val gradientEvaluator = GradientEvaluator(this)
@@ -52,12 +52,9 @@ abstract class VectorFunctor(inputSize: Int, outputSize: Int)
       F: DenseVector[T]
   ): Unit
 
-  def getValue(x: DenseVector[Double], F: DenseVector[Double]): Unit =
-    apply(x, F)
-
   def getValue(x: DenseVector[Double]): DenseVector[Double] = {
     val F = DenseVector.zeros[Double](x.size)
-    getValue(x, F)
+    apply(x, F)
     F
   }
 
