@@ -1,8 +1,7 @@
 import breeze.linalg.{DenseMatrix, DenseVector}
 
 import scala.{specialized => sp}
-import spire.algebra._
-import spire.implicits._
+import spire.algebra.{Field, Trig, NRoot}
 
 import scala.reflect.ClassTag
 
@@ -35,7 +34,7 @@ abstract class AutoDiffMultivariate(inputSize: Int)
 
   def evaluate(x: DenseVector[Double]): Unit = cache.evaluate(x)
 
-  def getValue(x: DenseVector[Double]): Double = cache.getValue
+  def getValue: Double = cache.getValue
 
   def getGradient: DenseVector[Double] = cache.getDerivative
 
