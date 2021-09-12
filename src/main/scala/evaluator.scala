@@ -2,54 +2,76 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import spire.math._
 import spire.implicits._
 
-trait AutoDiffEvaluator {
-  val functor: AutoDiffFunctor
-  implicit val jetDim: JetDim = JetDim(functor.inputSize)
+trait AutoDiffCache[I, V, D] {
+  val func: AutoDiffFunction
+  implicit val jetDim: JetDim = JetDim(func.inputSize)
+
+  def evaluate(x: I): Unit
+
+  def getValue: V
+
+  def getDerivative: D
+
 }
 
-case class DerivativeEvaluator(functor: UnivariateFunctor)
-    extends AutoDiffEvaluator {
-  def evaluateDerivative(x: Double): Double =
-    functor(Jet(x, 0)).infinitesimal(0)
+case class DerivativeCache(func: AutoDiffUnivariate)
+    extends AutoDiffCache[Double, Double, Double] {
+
+  private var result: Jet[Double] = Jet.zero
+
+  def evaluate(x: Double): Unit = result = func(Jet(x, 0))
+
+  def getValue: Double = result.real
+
+  def getDerivative: Double = result.infinitesimal(0)
+
 }
 
-case class GradientEvaluator(functor: MultivariateFunctor)
-    extends AutoDiffEvaluator {
+case class GradientCache(func: AutoDiffMultivariate)
+    extends AutoDiffCache[DenseVector[Double], Double, DenseVector[Double]] {
 
-  private val jetStorage = DenseVector.zeros[Jet[Double]](functor.inputSize)
-  private val gradientStorage = DenseVector.zeros[Double](functor.inputSize)
+  private var result: Jet[Double] = Jet.zero
+  private val jets = DenseVector.zeros[Jet[Double]](func.inputSize)
+  private val gradient = DenseVector.zeros[Double](func.inputSize)
 
-  def evaluateGradient(x: DenseVector[Double]): DenseVector[Double] = {
+  def evaluate(x: DenseVector[Double]): Unit = {
     cforRange(0 until x.size) { i =>
-      jetStorage(i) = Jet[Double](x(i), i)
+      jets(i) = Jet[Double](x(i), i)
     }
-    val result = functor(jetStorage)
+    result = func(jets)
     cforRange(0 until x.size) { i =>
-      gradientStorage(i) = result.infinitesimal(i)
+      gradient(i) = result.infinitesimal(i)
     }
-    gradientStorage
   }
 
+  def getValue: Double = result.real
+
+  def getDerivative: DenseVector[Double] = gradient
+
 }
 
-case class JacobianEvaluator(functor: VectorFunctor) extends AutoDiffEvaluator {
+case class JacobianCache(func: AutoDiffVector)
+    extends AutoDiffCache[DenseVector[Double], DenseVector[Double], DenseMatrix[
+      Double
+    ]] {
 
-  private val jetStorage = DenseVector.zeros[Jet[Double]](functor.inputSize)
-  private val valueStorage = DenseVector.zeros[Jet[Double]](functor.inputSize)
-  private val jacobianStorage: DenseMatrix[Double] =
-    DenseMatrix.zeros[Double](functor.inputSize, functor.outputSize)
+  private val value = DenseVector.zeros[Jet[Double]](func.inputSize)
+  private val jets = DenseVector.zeros[Jet[Double]](func.inputSize)
+  private val jacobian: DenseMatrix[Double] =
+    DenseMatrix.zeros[Double](func.inputSize, func.outputSize)
 
-  def evaluateJacobian(x: DenseVector[Double]): DenseMatrix[Double] = {
-    val m = functor.inputSize
-    val n = functor.outputSize
-    cforRange(0 until m) { i =>
-      jetStorage(i) = Jet[Double](x(i), i)
+  def evaluate(x: DenseVector[Double]): Unit = {
+    cforRange(0 until func.inputSize) { i =>
+      jets(i) = Jet[Double](x(i), i)
     }
-    functor(jetStorage, valueStorage)
-    cforRange2(0 until m, 0 until n) { (i, j) =>
-      jacobianStorage(i, j) = valueStorage(j).infinitesimal(i)
+    func(jets, value)
+    cforRange2(0 until func.inputSize, 0 until func.outputSize) { (i, j) =>
+      jacobian(i, j) = value(j).infinitesimal(i)
     }
-    jacobianStorage
   }
+
+  def getValue: DenseVector[Double] = value.map(_.real)
+
+  def getDerivative: DenseMatrix[Double] = jacobian
 
 }

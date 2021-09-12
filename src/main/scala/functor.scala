@@ -6,59 +6,53 @@ import spire.implicits._
 
 import scala.reflect.ClassTag
 
-protected abstract class AutoDiffFunctor(
-    val inputSize: Int,
-    val outputSize: Int
-) {
+protected abstract class AutoDiffFunction(val inputSize: Int,
+                                          val outputSize: Int) {
   require(inputSize > 0, s"Input size must be positive: $inputSize")
   require(outputSize > 0, s"Output size must be positive: $outputSize")
 }
 
-abstract class UnivariateFunctor extends AutoDiffFunctor(1, 1) {
+abstract class AutoDiffUnivariate extends AutoDiffFunction(1, 1) {
 
-  private val evaluator = DerivativeEvaluator(this)
+  private val cache = DerivativeCache(this)
 
   def apply[@sp(Double) T: Field: Trig: NRoot: ClassTag](x: T): T
 
-  def getValue(x: Double): Double = apply(x)
+  def evaluate(x: Double): Unit = cache.evaluate(x)
 
-  def getDerivative(x: Double): Double = evaluator.evaluateDerivative(x)
+  def getValue: Double = cache.getValue
+
+  def getDerivative: Double = cache.getDerivative
 
 }
 
-abstract class MultivariateFunctor(inputSize: Int)
-    extends AutoDiffFunctor(inputSize, 1) {
+abstract class AutoDiffMultivariate(inputSize: Int)
+    extends AutoDiffFunction(inputSize, 1) {
 
-  private val gradientEvaluator = GradientEvaluator(this)
+  private val cache = GradientCache(this)
 
   def apply[T: Field: Trig: NRoot: ClassTag](x: DenseVector[T]): T
 
-  def getValue(x: DenseVector[Double]): Double = apply(x)
+  def evaluate(x: DenseVector[Double]): Unit = cache.evaluate(x)
 
-  def getGradient(x: DenseVector[Double]): DenseVector[Double] =
-    gradientEvaluator.evaluateGradient(x)
+  def getValue(x: DenseVector[Double]): Double = cache.getValue
 
-  def getHessian(x: DenseVector[Double]): DenseMatrix[Double] = ???
+  def getGradient: DenseVector[Double] = cache.getDerivative
 
 }
 
-abstract class VectorFunctor(inputSize: Int, outputSize: Int)
-    extends AutoDiffFunctor(inputSize, outputSize) {
+abstract class AutoDiffVector(inputSize: Int, outputSize: Int)
+    extends AutoDiffFunction(inputSize, outputSize) {
 
-  private val evaluator = JacobianEvaluator(this)
+  private val cache = JacobianCache(this)
 
-  def apply[T: Field: Trig: NRoot: ClassTag](
-      x: DenseVector[T],
-      F: DenseVector[T]
-  ): Unit
+  def apply[T: Field: Trig: NRoot: ClassTag](x: DenseVector[T],
+                                             F: DenseVector[T]): Unit
 
-  def getValue(x: DenseVector[Double]): DenseVector[Double] = {
-    val F = DenseVector.zeros[Double](x.size)
-    apply(x, F)
-    F
-  }
+  def evaluate(x: DenseVector[Double]): Unit = cache.evaluate(x)
 
-  def getJacobian(x: DenseVector[Double]): DenseMatrix[Double] =
-    evaluator.evaluateJacobian(x)
+  def getValue: DenseVector[Double] = cache.getValue
+
+  def getGradient: DenseMatrix[Double] = cache.getDerivative
 
 }
