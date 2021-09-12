@@ -1,0 +1,52 @@
+[error] sbt.librarymanagement.ResolveException: Error downloading com.eltimn:sbt-slf4j_2.13:1.0.4
+[error]   Not found
+[error]   Not found
+[error]   not found: /home/sfriedowitz/.ivy2/localcom.eltimn/sbt-slf4j_2.13/1.0.4/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/com/eltimn/sbt-slf4j_2.13/1.0.4/sbt-slf4j_2.13-1.0.4.pom
+[error] 	at lmcoursier.CoursierDependencyResolution.unresolvedWarningOrThrow(CoursierDependencyResolution.scala:258)
+[error] 	at lmcoursier.CoursierDependencyResolution.$anonfun$update$38(CoursierDependencyResolution.scala:227)
+[error] 	at lmcoursier.CoursierDependencyResolution$$Lambda$6965/0x0000000000000000.apply(Unknown Source)
+[error] 	at scala.util.Either$LeftProjection.map(Either.scala:573)
+[error] 	at lmcoursier.CoursierDependencyResolution.update(CoursierDependencyResolution.scala:227)
+[error] 	at sbt.librarymanagement.DependencyResolution.update(DependencyResolution.scala:60)
+[error] 	at sbt.internal.LibraryManagement$.resolve$1(LibraryManagement.scala:59)
+[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$12(LibraryManagement.scala:133)
+[error] 	at sbt.internal.LibraryManagement$$$Lambda$3177/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.util.Tracked$.$anonfun$lastOutput$1(Tracked.scala:73)
+[error] 	at sbt.util.Tracked$$$Lambda$3088/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$20(LibraryManagement.scala:146)
+[error] 	at sbt.internal.LibraryManagement$$$Lambda$3134/0x0000000000000000.apply(Unknown Source)
+[error] 	at scala.util.control.Exception$Catch.apply(Exception.scala:228)
+[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$11(LibraryManagement.scala:146)
+[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$11$adapted(LibraryManagement.scala:127)
+[error] 	at sbt.internal.LibraryManagement$$$Lambda$3173/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.util.Tracked$.$anonfun$inputChangedW$1(Tracked.scala:219)
+[error] 	at sbt.util.Tracked$$$Lambda$2955/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.internal.LibraryManagement$.cachedUpdate(LibraryManagement.scala:160)
+[error] 	at sbt.Classpaths$.$anonfun$updateTask0$1(Defaults.scala:3678)
+[error] 	at sbt.Classpaths$$$Lambda$850/0x0000000000000000.apply(Unknown Source)
+[error] 	at scala.Function1.$anonfun$compose$1(Function1.scala:49)
+[error] 	at scala.Function1$$Lambda$440/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.internal.util.$tilde$greater.$anonfun$$u2219$1(TypeFunctions.scala:62)
+[error] 	at sbt.internal.util.$tilde$greater$$Lambda$2732/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.std.Transform$$anon$4.work(Transform.scala:68)
+[error] 	at sbt.Execute.$anonfun$submit$2(Execute.scala:282)
+[error] 	at sbt.Execute$$Lambda$2758/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.internal.util.ErrorHandling$.wideConvert(ErrorHandling.scala:23)
+[error] 	at sbt.Execute.work(Execute.scala:291)
+[error] 	at sbt.Execute.$anonfun$submit$1(Execute.scala:282)
+[error] 	at sbt.Execute$$Lambda$2742/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.ConcurrentRestrictions$$anon$4.$anonfun$submitValid$1(ConcurrentRestrictions.scala:265)
+[error] 	at sbt.ConcurrentRestrictions$$anon$4$$Lambda$2755/0x0000000000000000.apply(Unknown Source)
+[error] 	at sbt.CompletionService$$anon$2.call(CompletionService.scala:64)
+[error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[error] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+[error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[error] 	at java.base/java.lang.Thread.run(Thread.java:836)
+[error] (ssExtractDependencies) sbt.librarymanagement.ResolveException: Error downloading com.eltimn:sbt-slf4j_2.13:1.0.4
+[error]   Not found
+[error]   Not found
+[error]   not found: /home/sfriedowitz/.ivy2/localcom.eltimn/sbt-slf4j_2.13/1.0.4/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/com/eltimn/sbt-slf4j_2.13/1.0.4/sbt-slf4j_2.13-1.0.4.pom

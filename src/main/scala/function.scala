@@ -2,16 +2,16 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 
 import scala.{specialized => sp}
 import spire.algebra.{Field, Trig, NRoot}
+import spire.math._
 
 import scala.reflect.ClassTag
 
-protected abstract class AutoDiffFunction(val inputSize: Int,
-                                          val outputSize: Int) {
+abstract class AutoDiffFunction(val inputSize: Int, val outputSize: Int) {
   require(inputSize > 0, s"Input size must be positive: $inputSize")
   require(outputSize > 0, s"Output size must be positive: $outputSize")
 }
 
-abstract class AutoDiffUnivariate extends AutoDiffFunction(1, 1) {
+abstract class UnivariateAutoDiffFunction extends AutoDiffFunction(1, 1) {
 
   private val cache = DerivativeCache(this)
 
@@ -25,12 +25,12 @@ abstract class AutoDiffUnivariate extends AutoDiffFunction(1, 1) {
 
 }
 
-abstract class AutoDiffMultivariate(inputSize: Int)
+abstract class MultivariateAutoDiffFunction(inputSize: Int)
     extends AutoDiffFunction(inputSize, 1) {
 
   private val cache = GradientCache(this)
 
-  def apply[T: Field: Trig: NRoot: ClassTag](x: DenseVector[T]): T
+  def apply[@sp(Double) T: Field: Trig: NRoot: ClassTag](x: DenseVector[T]): T
 
   def evaluate(x: DenseVector[Double]): Unit = cache.evaluate(x)
 
@@ -40,13 +40,15 @@ abstract class AutoDiffMultivariate(inputSize: Int)
 
 }
 
-abstract class AutoDiffVector(inputSize: Int, outputSize: Int)
+abstract class VectorAutoDiffFunction(inputSize: Int, outputSize: Int)
     extends AutoDiffFunction(inputSize, outputSize) {
 
   private val cache = JacobianCache(this)
 
-  def apply[T: Field: Trig: NRoot: ClassTag](x: DenseVector[T],
-                                             F: DenseVector[T]): Unit
+  def apply[@sp(Double) T: Field: Trig: NRoot: ClassTag](
+      x: DenseVector[T],
+      F: DenseVector[T]
+  ): Unit
 
   def evaluate(x: DenseVector[Double]): Unit = cache.evaluate(x)
 
